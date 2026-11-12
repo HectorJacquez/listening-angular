@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Scripts only from this site; network calls only to the APIs the app uses. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' 'unsafe-inline';
+        font-src 'self';
+        img-src 'self' data: https://cdn-images.dzcdn.net https://*.mzstatic.com https://upload.wikimedia.org https://thumb.wikimedia.org;
+        media-src https://*.itunes.apple.com https://*.mzstatic.com;
+        connect-src 'self' https://musicbrainz.org https://itunes.apple.com https://en.wikipedia.org https://www.wikidata.org;
+        object-src 'none';
+        base-uri 'self';
+        form-action 'none'
+      "
+    />
+    <title>Listening · Angular demo</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=2" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png?v=2" />
+    <link rel="icon" href="favicon.ico?v=2" sizes="any" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2" />
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

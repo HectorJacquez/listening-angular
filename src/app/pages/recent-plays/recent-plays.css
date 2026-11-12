@@ -1,0 +1,125 @@
+.intro {
+  margin: 0 0 1.4rem;
+  max-width: 46rem;
+  line-height: 1.55;
+}
+.about {
+  margin: 0 0 0.75rem;
+}
+.totals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.9rem;
+  margin: 0 0 1.6rem;
+}
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+.bar h2 {
+  margin: 0;
+}
+.bar input {
+  flex: 1;
+  min-width: 14rem;
+}
+.count {
+  color: var(--ink-dim);
+  font-size: 0.82rem;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.plays {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.plays th button {
+  all: unset;
+  cursor: pointer;
+  font-family: var(--mono);
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.plays th button.on {
+  color: var(--accent);
+}
+.plays td {
+  padding-left: 0.9rem;
+  padding-right: 0.9rem;
+}
+.plays th {
+  padding-left: 0.9rem;
+  padding-right: 0.9rem;
+}
+.when {
+  white-space: nowrap;
+  color: var(--ink-dim);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+.act {
+  text-align: right;
+}
+.add {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.6rem;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .totals {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+  }
+  .bar input {
+    min-width: 0;
+    flex-basis: 100%;
+    order: 3;
+  }
+  .plays td,
+  .plays th {
+    padding-left: 0.55rem;
+    padding-right: 0.55rem;
+  }
+  .plays td.muted,
+  .plays th:nth-child(4),
+  .plays td:nth-child(5),
+  .plays th:nth-child(5) {
+    display: none;
+  }
+  /* fixed layout: a long title wraps instead of pushing the last column off screen */
+  .plays {
+    table-layout: fixed;
+  }
+  .plays td {
+    overflow-wrap: break-word;
+  }
+  .plays th:first-child {
+    width: 4.6rem;
+  }
+  .plays th:last-child {
+    width: 3rem;
+  }
+  .plays td.act {
+    padding-left: 0;
+  }
+  .when {
+    font-size: 0.72rem;
+  }
+  .add {
+    padding: 0.15rem 0.5rem;
+  }
+  .add:not(:disabled) {
+    font-size: 0;
+  }
+  .add:not(:disabled)::before {
+    content: '+';
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+}

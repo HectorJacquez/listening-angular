@@ -1,0 +1,32 @@
+<header class="bar">
+  <h2>Top artists</h2>
+  <input
+    type="search"
+    placeholder="filter"
+    [value]="filter()"
+    (input)="onFilter($event)"
+    aria-label="filter artists"
+  />
+</header>
+<p class="muted about">
+  My 60 most played artists, ranked by plays. Pick one to see my most played songs next to a bio,
+  facts and previews fetched live from Wikipedia, MusicBrainz and iTunes.
+</p>
+<ol class="grid">
+  @for (a of rows(); track a.name; let i = $index) {
+    <li>
+      <a [routerLink]="['/artist', credited(a)]">
+        <span class="rank">{{ rank(a) }}</span>
+        @if (a.image) {
+          <img class="pic" [src]="a.image" alt="" loading="lazy" />
+        } @else {
+          <span class="pic initial">{{ credited(a).slice(0, 1) }}</span>
+        }
+        <span class="name">{{ a.name | credited }}</span>
+        <span class="meta">{{ a.plays | thousands }} plays · {{ a.tracks }} tracks</span>
+      </a>
+    </li>
+  } @empty {
+    <li class="muted">{{ all().length ? 'no artist matches' : 'loading…' }}</li>
+  }
+</ol>

@@ -1,0 +1,31 @@
+<nav class="top">
+  <div class="wrap">
+    <a class="brand" routerLink="/"
+      ><span class="brandmark">♪</span><span class="brandname">Listening</span></a
+    >
+    <a class="item" routerLink="/" routerLinkActive="on" [routerLinkActiveOptions]="{ exact: true }"
+      >Recent</a
+    >
+    <a class="item" routerLink="/artists" routerLinkActive="on">Artists</a>
+    <a class="item" routerLink="/search" routerLinkActive="on">Search</a>
+    <a class="item" routerLink="/playlist" routerLinkActive="on">
+      Mixtape
+      @if (playlist.count() > 0) {
+        <span class="badge">{{ playlist.count() }}</span>
+      }
+    </a>
+    <span class="spacer"></span>
+    <a class="item external" href="https://hectorjacquez.github.io" target="_blank" rel="noopener"
+      >portfolio</a
+    >
+  </div>
+</nav>
+<main class="wrap">
+  <router-outlet />
+</main>
+<footer class="wrap provenance">
+  Angular 22, standalone components, signals, reactive forms, concurrent HTTP. My listening history
+  is a snapshot from my own music server (Navidrome plus the Spotify history I imported into it).
+  Artist facts, bios, artwork and previews come live from MusicBrainz, Wikipedia and the iTunes
+  Search API, no keys and no login.
+</footer>

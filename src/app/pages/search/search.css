@@ -1,0 +1,55 @@
+h2 {
+  margin: 0 0 0.25rem;
+}
+.big {
+  width: 100%;
+  font-size: 1.1rem;
+  padding: 0.7rem 1.1rem;
+  margin: 1rem 0;
+}
+.status {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+}
+.hits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.hits a {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 0 1rem;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: inherit;
+  border: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.hits a:hover {
+  text-decoration: none;
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+}
+.name {
+  font-family: var(--display);
+  font-weight: 600;
+}
+.meta {
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+  grid-column: 1;
+}
+.mine {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  white-space: nowrap;
+}

@@ -1,0 +1,98 @@
+<h2>Mixtape</h2>
+<p class="muted">
+  Add tracks from <a routerLink="/">recent plays</a>, an <a routerLink="/artists">artist page</a> or
+  <a routerLink="/search">search</a>, name it, then share the link. The link carries the whole list.
+</p>
+@if (fromLink()) {
+  <p class="from-link">Opened from a shared link. Edit it and share again to make your own.</p>
+}
+
+<form [formGroup]="form" (ngSubmit)="share()" novalidate>
+  <label>
+    <span>Name</span>
+    <input formControlName="name" placeholder="late shift" />
+    @if (showError('name')) {
+      <small class="err">3 to 60 characters</small>
+    }
+  </label>
+  <label>
+    <span>Target length (minutes)</span>
+    <input type="number" formControlName="targetMinutes" min="5" max="600" />
+    @if (showError('targetMinutes')) {
+      <small class="err">between 5 and 600</small>
+    }
+  </label>
+
+  <div
+    class="meter"
+    role="meter"
+    [attr.aria-valuenow]="fill()"
+    aria-valuemin="0"
+    aria-valuemax="100"
+  >
+    <div class="bar" [style.width.%]="fill()" [class.over]="overBy() > 0"></div>
+  </div>
+  <p class="length" [class.over]="overBy() > 0">
+    {{ store.totalSeconds() | mmss }} of {{ targetMinutes() }} min
+    @if (overBy() > 0) {
+      · over by {{ overBy() | mmss }}
+    }
+  </p>
+
+  <div class="actions">
+    <button type="submit" class="primary" [disabled]="!canShare">Share link</button>
+    <button type="button" (click)="store.clear()" [disabled]="store.count() === 0">Clear</button>
+  </div>
+  @if (shareUrl(); as url) {
+    <div class="share">
+      <input #link readonly [value]="url" (focus)="link.select()" aria-label="share link" />
+      <button type="button" (click)="copy(link)">{{ copied() ? 'copied' : 'copy' }}</button>
+    </div>
+  }
+</form>
+
+<ol class="items">
+  @for (i of store.items(); track i.key; let first = $first, last = $last) {
+    <li>
+      @if (i.art) {
+        <img class="art" [src]="i.art" alt="" loading="lazy" />
+      } @else if (i.art === undefined) {
+        <span class="art skeleton" title="looking up artwork"></span>
+      } @else {
+        <span class="art blank"></span>
+      }
+      <span class="who">
+        <span class="title">{{ i.title }}</span>
+        <span class="muted">{{ i.artist }} · {{ i.album }}</span>
+        <span class="open">
+          <a [href]="openIn('spotify', i)" target="_blank" rel="noopener">Spotify</a>
+          <a [href]="openIn('apple', i)" target="_blank" rel="noopener">Apple Music</a>
+          <a [href]="openIn('youtube', i)" target="_blank" rel="noopener">YouTube Music</a>
+        </span>
+      </span>
+      <app-preview-button [url]="i.preview" />
+      <span class="num">{{ i.duration | mmss }}</span>
+      <span class="ctl">
+        <button
+          type="button"
+          (click)="store.move(i.key, -1)"
+          [disabled]="first"
+          aria-label="move up"
+        >
+          ↑
+        </button>
+        <button
+          type="button"
+          (click)="store.move(i.key, 1)"
+          [disabled]="last"
+          aria-label="move down"
+        >
+          ↓
+        </button>
+        <button type="button" (click)="store.remove(i.key)" aria-label="remove">×</button>
+      </span>
+    </li>
+  } @empty {
+    <li class="muted empty">No tracks yet.</li>
+  }
+</ol>

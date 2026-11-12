@@ -1,0 +1,76 @@
+<p class="intro">
+  A portfolio project in Angular. It calls real data from public APIs, and uses a static copy of my
+  own music server's listening history.
+</p>
+
+<section class="totals">
+  @if (totals(); as t) {
+    <app-stat-card
+      [value]="t.plays | thousands"
+      label="plays, all time"
+      note="Navidrome + imported Spotify history"
+    />
+    <app-stat-card [value]="t.hours | thousands" label="hours listened" />
+    <app-stat-card [value]="t.tracks | thousands" label="tracks in the library" />
+    <app-stat-card [value]="t.artists | thousands" label="artists" />
+  }
+</section>
+
+<header class="bar">
+  <h2>Recent plays</h2>
+  <input
+    type="search"
+    placeholder="filter by title, artist or album"
+    [value]="filter()"
+    (input)="onFilter($event)"
+    aria-label="filter plays"
+  />
+  <span class="count">{{ shown() }} of {{ loaded() }}</span>
+</header>
+<p class="muted about">
+  The last few hundred songs I played. Sort by a column or filter, and click an artist for their
+  page.
+</p>
+
+<table class="plays">
+  <thead>
+    <tr>
+      <th>
+        <button (click)="sortBy('playedAt')" [class.on]="sortKey() === 'playedAt'">when</button>
+      </th>
+      <th><button (click)="sortBy('title')" [class.on]="sortKey() === 'title'">title</button></th>
+      <th>
+        <button (click)="sortBy('artist')" [class.on]="sortKey() === 'artist'">artist</button>
+      </th>
+      <th><button (click)="sortBy('album')" [class.on]="sortKey() === 'album'">album</button></th>
+      <th class="num">
+        <button (click)="sortBy('duration')" [class.on]="sortKey() === 'duration'">length</button>
+      </th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (p of rows(); track p.id + p.playedAt) {
+      <tr>
+        <td class="when" [title]="p.playedAt * 1000 | date: 'medium'">{{ p.playedAt | ago }}</td>
+        <td>{{ p.title }}</td>
+        <td>
+          <a [routerLink]="artistLink(p)">{{ p.artist | credited }}</a>
+        </td>
+        <td class="muted">{{ p.album }}</td>
+        <td class="num">{{ p.duration | mmss }}</td>
+        <td class="act">
+          <button class="add" (click)="playlist.addPlay(p)" [disabled]="playlist.has(p.id)">
+            {{ playlist.has(p.id) ? 'added' : '+ playlist' }}
+          </button>
+        </td>
+      </tr>
+    } @empty {
+      <tr>
+        <td colspan="6" class="muted">
+          {{ loaded() ? 'nothing matches that filter' : 'loading…' }}
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

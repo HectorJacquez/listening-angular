@@ -1,0 +1,45 @@
+<h2>Search any artist</h2>
+<p class="muted">
+  Looks up MusicBrainz as you type. Artists in my history show my play count; the rest still get a
+  page.
+</p>
+<input
+  type="search"
+  class="big"
+  placeholder="e.g. Boards of Canada"
+  [value]="query()"
+  (input)="onInput($event)"
+  aria-label="artist name"
+  autofocus
+/>
+
+@if (!idle()) {
+  @switch (results().status) {
+    @case ('loading') {
+      <p class="muted status">searching…</p>
+    }
+    @case ('error') {
+      <p class="muted status">MusicBrainz is not answering. Try again in a moment.</p>
+    }
+    @case ('empty') {
+      <p class="muted status">No artist by that name.</p>
+    }
+    @case ('ok') {
+      <ul class="hits">
+        @for (h of hits(); track h.id) {
+          <li>
+            <a [routerLink]="['/artist', h.name]">
+              <span class="name">{{ h.name }}</span>
+              <span class="meta">
+                {{ describe(h) }}
+              </span>
+              @if (myPlays(h); as n) {
+                <span class="mine">{{ n | thousands }} plays by me</span>
+              }
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  }
+}

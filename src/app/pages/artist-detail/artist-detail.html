@@ -1,0 +1,164 @@
+<p class="crumbs">
+  <a routerLink="/artists">← top artists</a> · <a routerLink="/search">search</a>
+</p>
+
+<header class="hero">
+  @if (photo(); as src) {
+    <img class="photo" [src]="src" [alt]="displayName()" />
+  } @else if (bio().status === 'loading') {
+    <div class="photo skeleton"></div>
+  }
+  <div class="hero-text">
+    <h2>{{ displayName() }}</h2>
+    <p class="chips">
+      @switch (facts().status) {
+        @case ('loading') {
+          <span class="chip skeleton-text">looking up MusicBrainz…</span>
+        }
+        @case ('ok') {
+          @if (origin()) {
+            <span class="chip">{{ origin() }}</span>
+          }
+          @if (years()) {
+            <span class="chip">{{ years() }}</span>
+          }
+          @for (t of tags(); track t) {
+            <span class="chip tag">{{ t }}</span>
+          }
+        }
+        @case ('empty') {
+          <span class="chip dim">not on MusicBrainz</span>
+        }
+        @case ('error') {
+          <span class="chip dim">MusicBrainz unavailable</span>
+        }
+      }
+    </p>
+    @switch (bio().status) {
+      @case ('loading') {
+        <p class="bio skeleton-text">reading Wikipedia…</p>
+      }
+      @case ('ok') {
+        @if (summary(); as b) {
+          <p class="bio">
+            {{ b.extract }} <a [href]="b.url" target="_blank" rel="noopener">Wikipedia ↗</a>
+          </p>
+        }
+      }
+      @case ('empty') {
+        <p class="bio dim">No Wikipedia article found.</p>
+      }
+      @case ('error') {
+        <p class="bio dim">Wikipedia unavailable right now.</p>
+      }
+    }
+  </div>
+</header>
+
+@if (artist(); as a) {
+  <section class="stats">
+    <app-stat-card [value]="a.plays | thousands" label="my plays" />
+    <app-stat-card [value]="a.tracks" label="tracks in my library" />
+    <app-stat-card [value]="a.albums" label="albums" />
+    <app-stat-card [value]="avgPlaysPerTrack()" label="plays per track" />
+  </section>
+
+  <h3>My most played</h3>
+  <table class="tracks">
+    <thead>
+      <tr>
+        <th class="pvh">preview</th>
+        <th>title</th>
+        <th>album</th>
+        <th class="num">plays</th>
+        <th class="num">length</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (t of a.topTracks; track t.album + t.title) {
+        <tr>
+          <td class="play"><app-preview-button [url]="preview(t)?.preview" /></td>
+          <td>{{ t.title }}</td>
+          <td class="muted">{{ t.album }}</td>
+          <td class="num">{{ t.plays | thousands }}</td>
+          <td class="num">{{ t.duration | mmss }}</td>
+          <td class="act">
+            <button class="add" (click)="add(a.name, t)" [disabled]="playlist.has(key(a.name, t))">
+              {{ playlist.has(key(a.name, t)) ? 'added' : '+ playlist' }}
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else if (mine().status === 'empty') {
+  <p class="muted note">
+    Not in my listening history. What follows comes from iTunes, MusicBrainz and Wikipedia.
+  </p>
+  @if (popular().length) {
+    <h3>Popular on iTunes</h3>
+    <table class="tracks">
+      <thead>
+        <tr>
+          <th class="pvh">preview</th>
+          <th>title</th>
+          <th>album</th>
+          <th class="num">length</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of popular(); track s.url) {
+          <tr>
+            <td class="play"><app-preview-button [url]="s.preview" /></td>
+            <td>{{ s.title }}</td>
+            <td class="muted">{{ s.album }}</td>
+            <td class="num">{{ s.ms / 1000 | mmss }}</td>
+            <td class="act">
+              <button
+                class="add"
+                (click)="add(name(), s)"
+                [disabled]="playlist.has(key(name(), s))"
+              >
+                {{ playlist.has(key(name(), s)) ? 'added' : '+ playlist' }}
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+}
+
+<h3>Albums</h3>
+@switch (albums().status) {
+  @case ('loading') {
+    <div class="albums">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="album skeleton"></div>
+      }
+    </div>
+  }
+  @case ('ok') {
+    <div class="albums">
+      @for (al of albumList(); track al.url) {
+        <a class="album" [href]="al.url" target="_blank" rel="noopener" [title]="al.name">
+          <img [src]="al.art" [alt]="al.name" loading="lazy" />
+          <span class="album-name">{{ al.name }}</span>
+          <span class="album-meta">{{ al.year }} · {{ al.tracks }} tracks</span>
+        </a>
+      }
+    </div>
+    <p class="provenance">
+      Artwork and the 30-second previews come from the iTunes Search API, which is why they stop at
+      thirty seconds. Facts from MusicBrainz, bio from Wikipedia.
+    </p>
+  }
+  @case ('empty') {
+    <p class="muted">iTunes has nothing under this name.</p>
+  }
+  @case ('error') {
+    <p class="muted">iTunes unavailable right now.</p>
+  }
+}
