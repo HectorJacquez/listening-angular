@@ -25,7 +25,10 @@ jobs:
       - name: Check formatting (Prettier)
         run: pnpm run format:check
       - name: Run tests (Vitest)
-        run: pnpm exec ng test --watch=false --reporters=verbose
+        run: pnpm exec ng test --watch=false --reporters=verbose --reporters=json --output-file=test-results.json
+      - name: Write the test summary
+        if: always()
+        run: node scripts/test-summary.mjs >> "$GITHUB_STEP_SUMMARY"
       - name: Build
         run: pnpm exec ng build --base-href /listening-angular/
       - name: Upload the site for Pages
