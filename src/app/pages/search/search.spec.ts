@@ -43,6 +43,8 @@ describe('Search', () => {
     return { f, c: f.componentInstance, calls };
   }
   const tick = () => new Promise((r) => setTimeout(r, 5));
+  // a fixed wait was too short on a busy CI runner
+  const searches = (calls: unknown[], n: number) => vi.waitFor(() => expect(calls.length).toBe(n));
 
   it('does not search for one character', async () => {
     const { c, calls } = await render();
@@ -54,9 +56,9 @@ describe('Search', () => {
   it('a newer query wins even when the older response lands later', async () => {
     const { f, c, calls } = await render();
     c.query.set('death');
-    await tick();
+    await searches(calls, 1);
     c.query.set('death grips');
-    await tick();
+    await searches(calls, 2);
     expect(calls.map((x) => x.q)).toEqual(['death', 'death grips']);
     calls[1].out.next([
       {
@@ -84,7 +86,7 @@ describe('Search', () => {
   it('shows an error line when MusicBrainz fails', async () => {
     const { f, c, calls } = await render();
     c.query.set('boards');
-    await tick();
+    await searches(calls, 1);
     calls[0].out.error({ status: 503 });
     await f.whenStable();
     expect(f.nativeElement.textContent).toContain('not answering');
