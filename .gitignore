@@ -46,4 +46,3 @@ Thumbs.db
 
 # what the public snapshot leaves out
 /scripts/snapshot-filters.json
-/test-results.json
