@@ -150,7 +150,7 @@ footer.provenance {
     align-items: center;
   }
   .brand {
-    grid-column: 1 / 5;
+    grid-column: 1 / 4;
     margin-right: 0;
   }
   .brand .brandmark {
@@ -168,8 +168,11 @@ footer.provenance {
   }
   nav.top a.item.external {
     grid-row: 1;
-    grid-column: 5;
+    grid-column: 4 / 6;
     justify-self: end;
+    white-space: nowrap;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
   }
   .brand {
     grid-row: 1;
